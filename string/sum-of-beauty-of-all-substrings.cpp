@@ -1,30 +1,28 @@
 class Solution {
 public:
     int beautySum(string s) {
-    int total_beauty = 0;
-    int n = s.length();
+        int n = s.length();
+        int total_beauty = 0;
 
-    for (int i = 0; i < n; ++i) {
-        unordered_map<char, int> freq;
-        int max_freq = 0;
-        int min_freq = INT_MAX;
+        for (int i = 0; i < n; i++) {
+            vector<int> freq(26, 0);
+            int max_freq = 0;
 
-        for (int j = i; j < n; ++j) {
-            char c = s[j];
-            freq[c]++;
-            max_freq = max(max_freq, freq[c]);
-            
-            min_freq = INT_MAX;
-            for (const auto& entry : freq) {
-                if (entry.second > 0) {
-                    min_freq = min(min_freq, entry.second);
+            for (int j = i; j < n; j++) {
+                int idx = s[j] - 'a';
+                freq[idx]++;
+                max_freq = max(max_freq, freq[idx]);
+
+                int min_freq = INT_MAX;
+                for (int k = 0; k < 26; k++) {
+                    if (freq[k] > 0) {
+                        min_freq = min(min_freq, freq[k]);
+                    }
                 }
+
+                total_beauty += (max_freq - min_freq);
             }
-            
-            total_beauty += (max_freq - min_freq);
         }
-    }
-    
-    return total_beauty;
+        return total_beauty;
     }
 };
