@@ -6,9 +6,9 @@ public:
         Counter[s[i]]++;
      }
      priority_queue<pair<int,char>>pq;
-      for (std::map<char, int>::iterator it = Counter.begin(); it != Counter.end(); ++it){
-        pq.push(make_pair(it->second,it->first));
-     }
+     for (auto p : Counter) {
+    pq.push({p.second, p.first});
+}
      string res = "";
      while(!pq.empty()){
         pair<int,char>top = pq.top();
