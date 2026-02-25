@@ -1,48 +1,45 @@
-
 class Solution {
 public:
-  
-    void solve(int col, vector<string>& board, int n,
-               vector<int>& leftRow, vector<int>& upperDiagonal, vector<int>& lowerDiagonal,
-               vector<vector<string>>& ans) {
-       
-        if (col == n) {
+    void solve(int row, int n, vector<string>& board,
+               vector<vector<string>>& ans,
+               vector<int>& col,
+               vector<int>& diag1,
+               vector<int>& diag2) {
+        
+        if (row == n) {
             ans.push_back(board);
             return;
         }
 
-        
-        for (int row = 0; row < n; row++) {
-           
-            if (leftRow[row] == 0 && lowerDiagonal[row + col] == 0 &&
-                upperDiagonal[n - 1 + col - row] == 0) {
-
+        for (int c = 0; c < n; c++) {
+            if (col[c] == 0 && 
+                diag1[row + c] == 0 && 
+                diag2[row - c + n - 1] == 0) {
                 
-                board[row][col] = 'Q';
+                board[row][c] = 'Q';
+                col[c] = 1;
+                diag1[row + c] = 1;
+                diag2[row - c + n - 1] = 1;
 
-                
-                leftRow[row] = 1;
-                lowerDiagonal[row + col] = 1;
-                upperDiagonal[n - 1 + col - row] = 1;
+                solve(row + 1, n, board, ans, col, diag1, diag2);
 
-               
-                solve(col + 1, board, n, leftRow, upperDiagonal, lowerDiagonal, ans);
-
-               
-                board[row][col] = '.';
-                leftRow[row] = 0;
-                lowerDiagonal[row + col] = 0;
-                upperDiagonal[n - 1 + col - row] = 0;
+                board[row][c] = '.';
+                col[c] = 0;
+                diag1[row + c] = 0;
+                diag2[row - c + n - 1] = 0;
             }
         }
     }
 
-    
     vector<vector<string>> solveNQueens(int n) {
         vector<vector<string>> ans;
         vector<string> board(n, string(n, '.'));
-        vector<int> leftRow(n, 0), upperDiagonal(2 * n - 1, 0), lowerDiagonal(2 * n - 1, 0);
-        solve(0, board, n, leftRow, upperDiagonal, lowerDiagonal, ans);
+
+        vector<int> col(n, 0);
+        vector<int> diag1(2*n - 1, 0);
+        vector<int> diag2(2*n - 1, 0);
+
+        solve(0, n, board, ans, col, diag1, diag2);
         return ans;
     }
 };
