@@ -1,52 +1,54 @@
 class Solution {
 public:
     vector<string> result;
+    string path;
     
-    void backtrack(string& num, int target, int index, 
-                   long currentValue, long prevValue, string expression) {
+    void dfs(const string& num, int target, int pos, 
+             long long currVal, long long prevVal) {
         
-        if (index == num.length()) {
-            if (currentValue == target) {
-                result.push_back(expression);
+        if (pos == num.size()) {
+            if (currVal == target) {
+                result.push_back(path);
             }
             return;
         }
         
-        for (int i = index; i < num.length(); i++) {
+        long long number = 0;
+        int len = path.size();  
+        
+        for (int i = pos; i < num.size(); i++) {
             
-            // Avoid numbers with leading zero
-            if (i > index && num[index] == '0') break;
+            if (i > pos && num[pos] == '0') break;
             
-            string part = num.substr(index, i - index + 1);
-            long number = stol(part);
+            number = number * 10 + (num[i] - '0');
             
-            if (index == 0) {
-                // First number (no operator before it)
-                backtrack(num, target, i + 1, number, number, part);
+            if (pos == 0) {
+
+                path += to_string(number);
+                dfs(num, target, i + 1, number, number);
+                path.resize(len);  
             } else {
-                // Addition
-                backtrack(num, target, i + 1,
-                          currentValue + number,
-                          number,
-                          expression + "+" + part);
+
+                path += "+" + to_string(number);
+                dfs(num, target, i + 1, currVal + number, number);
+                path.resize(len);
+
+                path += "-" + to_string(number);
+                dfs(num, target, i + 1, currVal - number, -number);
+                path.resize(len);
                 
-                // Subtraction
-                backtrack(num, target, i + 1,
-                          currentValue - number,
-                          -number,
-                          expression + "-" + part);
-                
-                // Multiplication
-                backtrack(num, target, i + 1,
-                          currentValue - prevValue + (prevValue * number),
-                          prevValue * number,
-                          expression + "*" + part);
+                path += "*" + to_string(number);
+                dfs(num, target, i + 1,
+                    currVal - prevVal + prevVal * number,
+                    prevVal * number);
+                path.resize(len);
             }
         }
     }
     
     vector<string> addOperators(string num, int target) {
-        backtrack(num, target, 0, 0, 0, "");
+        result.reserve(10000);   
+        dfs(num, target, 0, 0, 0);
         return result;
     }
 };
