@@ -9,6 +9,12 @@ public:
 
         while (x != 0) {
             int digit = x % 10;
+
+            // Overflow check
+            if (rev > INT_MAX / 10 || 
+                (rev == INT_MAX / 10 && digit > 7))
+                return false;
+
             rev = rev * 10 + digit;
             x /= 10;
         }
