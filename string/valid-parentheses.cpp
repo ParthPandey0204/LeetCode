@@ -15,6 +15,6 @@ public:
          return false;
         }  
     }
-    return true;
+    return a.empty();
     }
 };
